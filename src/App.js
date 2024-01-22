@@ -1,25 +1,38 @@
-import logo from './logo.svg';
-import './App.css';
+import { useQuery, gql } from "@apollo/client";
+
+const GET_IDEAS = gql`
+  {
+    ideas {
+      edges {
+        node {
+          id
+          title
+          currentStatus {
+            edges {
+              node {
+                name
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+`;
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+  const { loading, error, data } = useQuery(GET_IDEAS);
+  if (loading) return <p>Loading...</p>;
+  if (error) return <p>Error : {error.message}</p>;
+
+  return data.ideas.edges.map((idea) => (
+    <div>
+      <h1 key={idea.node.id}>{idea.node.title}</h1>
+      {idea.node.currentStatus.edges.map((status, index) => (
+        <p key={index}>{status.node.name}</p>
+      ))}
     </div>
-  );
+  ));
 }
 
 export default App;
