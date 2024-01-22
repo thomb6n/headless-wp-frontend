@@ -10,6 +10,7 @@ const GET_IDEAS = gql`
           currentStatus {
             edges {
               node {
+                id
                 name
               }
             }
@@ -26,10 +27,10 @@ function App() {
   if (error) return <p>Error : {error.message}</p>;
 
   return data.ideas.edges.map((idea) => (
-    <div>
-      <h1 key={idea.node.id}>{idea.node.title}</h1>
+    <div key={idea.node.id}>
+      <h1>{idea.node.title}</h1>
       {idea.node.currentStatus.edges.map((status, index) => (
-        <p key={index}>{status.node.name}</p>
+        <p key={status.node.id}>{status.node.name}</p>
       ))}
     </div>
   ));
